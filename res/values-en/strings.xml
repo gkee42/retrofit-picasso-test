@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="application_name">Golden Books - Square</string>
+    <string name="base_url">http://assignment.golgek.mobi/</string>
+    <string name="items_endpoint">api/v10/items</string>
+
+    <string name="empty_list">Error fetching data from the internet. Please check your connection and try again.</string>
+
+</resources>
