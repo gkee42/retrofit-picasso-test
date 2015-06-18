@@ -1,6 +1,5 @@
 package com.mg.GoldenBooks.fragments;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.mg.GoldenBooks.R;
 import com.mg.GoldenBooks.domain.Book;
 import com.mg.GoldenBooks.domain.BookListItem;
@@ -11,6 +10,7 @@ import com.squareup.picasso.Picasso;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +29,7 @@ import retrofit.client.Response;
 /**
  * Display the details of a single book.
  */
-public class BookDetailsFragment extends SherlockFragment {
+public class BookDetailsFragment extends Fragment {
 
     private ImageView mBookPic;
 
@@ -72,7 +72,7 @@ public class BookDetailsFragment extends SherlockFragment {
         final Intent activityIntent = activity.getIntent();
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setServer(getString(R.string.base_url))
+                .setEndpoint(getString(R.string.base_url))
                 .build();
 
         BookDetailsService booksService = restAdapter

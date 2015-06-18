@@ -1,6 +1,5 @@
 package com.mg.GoldenBooks.fragments;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.mg.GoldenBooks.R;
 import com.mg.GoldenBooks.adapters.BooksAdapter;
 import com.mg.GoldenBooks.domain.BookListItem;
@@ -9,6 +8,7 @@ import com.mg.GoldenBooks.interfaces.BooksService;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +27,7 @@ import retrofit.client.Response;
 /**
  * Main list of books.
  */
-public class BooksFragment extends SherlockFragment {
+public class BooksFragment extends Fragment {
 
     private ListView mListView;
 
@@ -74,7 +74,7 @@ public class BooksFragment extends SherlockFragment {
 
         // Fetch data using retrofit
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setServer(getString(R.string.base_url))
+                .setEndpoint(getString(R.string.base_url))
                 .build();
 
         BooksService booksService = restAdapter.create(BooksService.class);

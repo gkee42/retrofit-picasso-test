@@ -1,0 +1,70 @@
+// This section tells Gradle where to find everything it needs.
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.2.3'
+    }
+}
+
+// This section tells Gradle where to find everything your app needs.
+repositories {
+    mavenCentral()
+}
+
+// Here we're applying the plugins we want to use in the build script. 'android' is the most important.
+apply plugin: 'com.android.application'
+
+
+// Android configuration goes here.
+android {
+    // Choose your platform.
+    compileSdkVersion 22
+    buildToolsVersion '21.1.2'
+
+    // These options apply to all builds.
+    defaultConfig {
+        // These are applied to the manifest, to prevent nasty compat modes, use the latest you can.
+        minSdkVersion 14
+        targetSdkVersion 22
+    }
+
+    // A lot of 3rd party libraries contain similar stuff.
+    packagingOptions {
+        exclude 'LICENSE.*'
+        exclude 'LICENSE.txt'
+        exclude 'NOTICE.*'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/notice.txt'
+    }
+
+    // One day, we'll change this to true...
+    lintOptions {
+        abortOnError false
+    }
+}
+
+// Use http://gradleplease.appspot.com/ to find dependency names.
+dependencies {
+
+    // AppCompat
+    compile 'com.android.support:appcompat-v7:22.1.1'
+
+    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.picasso:picasso:2.2.0'
+
+    // Injection stuff
+    compile 'com.jakewharton:butterknife:6.0.0'
+
+    // Log
+    compile 'com.jakewharton.timber:timber:2.5.0'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
