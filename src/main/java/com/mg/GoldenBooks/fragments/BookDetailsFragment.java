@@ -7,8 +7,6 @@ import com.mg.GoldenBooks.intents.BookDetailsIntent;
 import com.mg.GoldenBooks.interfaces.BookDetailsService;
 import com.squareup.picasso.Picasso;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,6 +18,8 @@ import android.widget.TextView;
 
 import java.text.NumberFormat;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -31,35 +31,31 @@ import retrofit.client.Response;
  */
 public class BookDetailsFragment extends Fragment {
 
-    private ImageView mBookPic;
 
-    private TextView mBookTitle;
+    @InjectView (R.id.fragment_book_details_image)
+    ImageView mBookPic;
 
-    private TextView mBookAuthor;
+    @InjectView (R.id.fragment_book_details_title)
+    TextView mBookTitle;
 
-    private TextView mBookPrice;
+    @InjectView (R.id.fragment_book_details_author)
+    TextView mBookAuthor;
+
+    @InjectView (R.id.fragment_book_details_price)
+    TextView mBookPrice;
+
+    private BookListItem mBook;
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
             final ViewGroup container, final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_book_details, container, false);
 
-        mBookPic = (ImageView) view
-                .findViewById(R.id.fragment_book_details_image);
-
-        mBookTitle = (TextView) view
-                .findViewById(R.id.fragment_book_details_title);
-
-        mBookAuthor = (TextView) view
-                .findViewById(R.id.fragment_book_details_author);
-
-        mBookPrice = (TextView) view
-                .findViewById(R.id.fragment_book_details_price);
+        ButterKnife.inject(this, view);
 
         // We already have the title, might as well display it at once
-        BookListItem book = BookDetailsIntent
-                .getBook(getActivity().getIntent());
-        mBookTitle.setText(book.getTitle());
+        mBook = BookDetailsIntent.getBook(getActivity().getIntent());
+        mBookTitle.setText(mBook.getTitle());
 
         return view;
     }
@@ -68,9 +64,6 @@ public class BookDetailsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final Activity activity = getActivity();
-        final Intent activityIntent = activity.getIntent();
-
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(getString(R.string.base_url))
                 .build();
@@ -78,8 +71,7 @@ public class BookDetailsFragment extends Fragment {
         BookDetailsService booksService = restAdapter
                 .create(BookDetailsService.class);
 
-        booksService.bookDetails(
-                BookDetailsIntent.getBook(activityIntent).getId(), new Callback<Book>() {
+        booksService.bookDetails(mBook.getId(), new Callback<Book>() {
             @Override
             public void success(Book book, Response response) {
                 displayBookData(book);
@@ -87,8 +79,8 @@ public class BookDetailsFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError e) {
-                Log.w("MG", e.getMessage().toString());
-                showErrorMessage(e.getMessage().toString());
+                Log.w("MG", e.getMessage());
+                showErrorMessage(e.getMessage());
             }
         });
     }

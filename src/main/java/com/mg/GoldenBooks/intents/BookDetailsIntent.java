@@ -10,22 +10,18 @@ import android.os.Parcelable;
 public class BookDetailsIntent extends Intent {
 
     /**
-     * A quick message for the user, ie. Hello World.
+     * The partial book object to be displayed.
      */
-    private static final String EXTRA_BOOK_ID = "extraMessage";
+    private static final String EXTRA_BOOK = "extraMessage";
 
     /**
-     * Create an Intent containing a message.
+     * Create an Intent containing a book object.
      *
-     * @param bookId ID of the book to be displayed.
+     * @param bookListItem the book to be displayed.
      */
-    public BookDetailsIntent(final int bookId) {
-        putExtra(EXTRA_BOOK_ID, bookId);
-    }
-
-    public BookDetailsIntent(final Context context, final BookListItem bookId) {
+    public BookDetailsIntent(final Context context, final BookListItem bookListItem) {
         super(context, BookDetailsActivity.class);
-        putExtra(EXTRA_BOOK_ID, bookId);
+        putExtra(EXTRA_BOOK, bookListItem);
     }
 
     /**
@@ -50,8 +46,8 @@ public class BookDetailsIntent extends Intent {
      * @return The ID of a book.
      */
     public static BookListItem getBook(final Intent intent) {
-//        return intent.getIntExtra(EXTRA_BOOK_ID, -1);
-        final Parcelable book = intent.getParcelableExtra(EXTRA_BOOK_ID);
+//        return intent.getIntExtra(EXTRA_BOOK, -1);
+        final Parcelable book = intent.getParcelableExtra(EXTRA_BOOK);
         if (book instanceof BookListItem) {
             return (BookListItem) book;
         } else {

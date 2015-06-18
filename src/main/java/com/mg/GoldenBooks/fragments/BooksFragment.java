@@ -98,14 +98,9 @@ public class BooksFragment extends Fragment {
     }
 
     private void setAdapterData(BookListItem[] books) {
-
-        // Set data
         final BooksAdapter booksAdapter
                 = (BooksAdapter) mListView.getAdapter();
         booksAdapter.changeBooksList(books);
-        // make sure it's displaying
-        mListView.setVisibility(View.VISIBLE);
-        mEmptyView.setVisibility(View.GONE);
     }
 
     private void showErrorMessage(String msg) {
