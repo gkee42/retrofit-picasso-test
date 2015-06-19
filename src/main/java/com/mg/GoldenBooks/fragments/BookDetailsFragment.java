@@ -4,12 +4,12 @@ import com.mg.GoldenBooks.R;
 import com.mg.GoldenBooks.domain.Book;
 import com.mg.GoldenBooks.domain.BookListItem;
 import com.mg.GoldenBooks.intents.BookDetailsIntent;
-import com.mg.GoldenBooks.interfaces.BookDetailsService;
+import com.mg.GoldenBooks.BookApplication;
+import com.mg.GoldenBooks.interfaces.BooksService;
 import com.squareup.picasso.Picasso;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +21,9 @@ import java.text.NumberFormat;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 
 /**
@@ -64,12 +64,8 @@ public class BookDetailsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(getString(R.string.base_url))
-                .build();
-
-        BookDetailsService booksService = restAdapter
-                .create(BookDetailsService.class);
+        // TODO Inject bookservice with dagger?
+        BooksService booksService = ((BookApplication) getActivity().getApplication()).getBooksService();
 
         booksService.bookDetails(mBook.getId(), new Callback<Book>() {
             @Override
@@ -79,7 +75,7 @@ public class BookDetailsFragment extends Fragment {
 
             @Override
             public void failure(RetrofitError e) {
-                Log.w("MG", e.getMessage());
+                Timber.w("MG", e.getMessage());
                 showErrorMessage(e.getMessage());
             }
         });
@@ -93,7 +89,7 @@ public class BookDetailsFragment extends Fragment {
     private void displayBookData(Book book) {
 
         if (book == null) {
-            Log.w("MG", "Can't display book, it's null");
+            Timber.w("MG", "Can't display book, it's null");
             return;
         }
 

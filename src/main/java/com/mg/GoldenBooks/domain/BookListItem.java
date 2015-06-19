@@ -3,9 +3,6 @@ package com.mg.GoldenBooks.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by mg on 7/25/13.
- */
 public class BookListItem implements Parcelable {
 
     /**
@@ -27,24 +24,12 @@ public class BookListItem implements Parcelable {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getLink() {
         return link;
     }
 
-    public void setLink(String link) {
-        this.link = link;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     @Override
@@ -84,9 +69,4 @@ public class BookListItem implements Parcelable {
         link = in.readString();
         title = in.readString();
     }
-
-    public BookListItem() {
-        super();
-    }
-
 }

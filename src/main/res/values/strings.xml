@@ -2,8 +2,6 @@
 <resources>
 
     <string name="application_name">Golden Books - Square</string>
-    <string name="base_url">http://assignment.gae.golgek.mobi/</string>
-
     <string name="empty_list">Error fetching data from the internet. Please check your connection and try again.</string>
 
 </resources>

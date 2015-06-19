@@ -29,7 +29,6 @@ public class BookDetailsIntent extends Intent {
      * @return The BookListItem containing some book details.
      */
     public static BookListItem getBook(final Intent intent) {
-//        return intent.getIntExtra(EXTRA_BOOK, -1);
         final Parcelable book = intent.getParcelableExtra(EXTRA_BOOK);
         if (book instanceof BookListItem) {
             return (BookListItem) book;

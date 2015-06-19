@@ -11,13 +11,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class BooksAdapter extends BaseAdapter {
 
-    private BookListItem[] mBooksList;
+    private List<BookListItem> mBooksList;
 
     private final LayoutInflater mInflater;
 
-    public BooksAdapter(final Context context, final BookListItem[] booksList) {
+    public BooksAdapter(final Context context, final List<BookListItem> booksList) {
         super();
         mBooksList = booksList;
         mInflater = LayoutInflater.from(context);
@@ -26,7 +28,7 @@ public class BooksAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         if (mBooksList != null) {
-            return mBooksList.length;
+            return mBooksList.size();
         } else {
             return 0;
         }
@@ -34,8 +36,8 @@ public class BooksAdapter extends BaseAdapter {
 
     @Override
     public BookListItem getItem(final int position) {
-        if (mBooksList != null && mBooksList.length > position) {
-            return mBooksList[position];
+        if (mBooksList != null && mBooksList.size() > position) {
+            return mBooksList.get(position);
         } else {
             return null;
         }
@@ -51,9 +53,13 @@ public class BooksAdapter extends BaseAdapter {
         return true;
     }
 
-    public void changeBooksList(final BookListItem[] booksList) {
-        // Swap
-        mBooksList = booksList;
+    public void addBooksToList(final List<BookListItem> booksList) {
+        if(mBooksList == null) {
+            // Swap
+            mBooksList = booksList;
+        } else {
+            mBooksList.addAll(booksList);
+        }
         // update front end
         notifyDataSetChanged();
     }

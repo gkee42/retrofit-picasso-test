@@ -4,15 +4,16 @@ import com.mg.GoldenBooks.R;
 import com.mg.GoldenBooks.adapters.BooksAdapter;
 import com.mg.GoldenBooks.domain.BookListItem;
 import com.mg.GoldenBooks.intents.BookDetailsIntent;
+import com.mg.GoldenBooks.BookApplication;
 import com.mg.GoldenBooks.interfaces.BooksService;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -23,9 +24,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import timber.log.Timber;
 
 /**
  * Main list of books.
@@ -41,6 +42,11 @@ public class BooksFragment extends Fragment {
     @InjectView(R.id.progress)
     ProgressBar mProgress;
 
+    private int mOffset = 0;
+    private static final int COUNT = 10;
+
+    private boolean isLoading = false;
+    private boolean hasMore = true;
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
@@ -72,8 +78,7 @@ public class BooksFragment extends Fragment {
                             int position,
                             long id) {
                         BookDetailsIntent intent
-                                = new BookDetailsIntent(
-                                activity,
+                                = new BookDetailsIntent(activity,
                                 ((BooksAdapter) mListView
                                         .getAdapter())
                                         .getItem(position));
@@ -81,38 +86,65 @@ public class BooksFragment extends Fragment {
                     }
                 });
 
-        // Fetch data using retrofit
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(getString(R.string.base_url))
-                .build();
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == SCROLL_STATE_IDLE) { // download when user stops scrolling...
+                    if (mListView.getLastVisiblePosition() >= mListView.getCount() - 1 - 2/*threshold*/) {
+                        loadMore();
+                    }
+                }
+            }
 
-        BooksService booksService = restAdapter.create(BooksService.class);
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                // Do nothing
+            }
+        });
+
+        loadMore();
+    }
+
+    private void loadMore() {
+        // TODO Inject bookservice with dagger?
+
+        if(isLoading || !hasMore) {
+            return;
+        }
+
+        isLoading=true;
+
+        // Fetch data using retrofit
         // Get books asynchronously by passing a callback.
-        booksService.books(new Callback<List<BookListItem>>() {
+        BooksService booksService = ((BookApplication) getActivity().getApplication()).getBooksService();
+
+        booksService.books(COUNT, mOffset, new Callback<List<BookListItem>>() {
             @Override
             public void success(List<BookListItem> bookListItems, Response response) {
-                // turn the list into an array
-                BookListItem[] bookArray = new BookListItem[bookListItems.size()];
-                bookListItems.toArray(bookArray);
-
                 mProgress.setVisibility(View.GONE);
                 // populate list
-                setAdapterData(bookArray);
+                setAdapterData(bookListItems);
+
+                mOffset += COUNT;
+                isLoading = false;
+                hasMore =  bookListItems.size() == COUNT;
             }
 
             @Override
             public void failure(RetrofitError e) {
-                Log.w("MG", e.getMessage());
+                Timber.w("MG", e.getMessage());
                 mProgress.setVisibility(View.GONE);
                 showErrorMessage(getString(R.string.empty_list));
+                isLoading = false;
             }
         });
+
     }
 
-    private void setAdapterData(BookListItem[] books) {
+    private void setAdapterData(List<BookListItem> books) {
         final BooksAdapter booksAdapter
                 = (BooksAdapter) mListView.getAdapter();
-        booksAdapter.changeBooksList(books);
+        booksAdapter.addBooksToList(books);
     }
 
     private void showErrorMessage(String msg) {
