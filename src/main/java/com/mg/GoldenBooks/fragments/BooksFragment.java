@@ -15,10 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -29,17 +32,23 @@ import retrofit.client.Response;
  */
 public class BooksFragment extends Fragment {
 
-    private ListView mListView;
+    @InjectView(R.id.fragment_home_list_view)
+    ListView mListView;
 
-    private TextView mEmptyView;
+    @InjectView(R.id.fragment_history_empty_text)
+    TextView mEmptyView;
+
+    @InjectView(R.id.progress)
+    ProgressBar mProgress;
+
 
     @Override
     public View onCreateView(final LayoutInflater inflater,
             final ViewGroup container, final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_books, container, false);
-        mListView = (ListView) view.findViewById(R.id.fragment_home_list_view);
-        mEmptyView = (TextView) view
-                .findViewById(R.id.fragment_history_empty_text);
+
+        ButterKnife.inject(this, view);
+
         return view;
     }
 
@@ -85,6 +94,8 @@ public class BooksFragment extends Fragment {
                 // turn the list into an array
                 BookListItem[] bookArray = new BookListItem[bookListItems.size()];
                 bookListItems.toArray(bookArray);
+
+                mProgress.setVisibility(View.GONE);
                 // populate list
                 setAdapterData(bookArray);
             }
@@ -92,6 +103,7 @@ public class BooksFragment extends Fragment {
             @Override
             public void failure(RetrofitError e) {
                 Log.w("MG", e.getMessage());
+                mProgress.setVisibility(View.GONE);
                 showErrorMessage(getString(R.string.empty_list));
             }
         });

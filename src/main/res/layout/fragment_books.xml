@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <TextView
@@ -9,10 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
+        android:layout_gravity="center"
         android:paddingLeft="@dimen/padding2X"
         android:paddingRight="@dimen/padding2X"
         android:paddingTop="@dimen/padding2X"
         android:text="@string/empty_list"
+        tools:visibility="visible"
         android:visibility="gone" />
 
     <ListView
@@ -21,5 +24,13 @@
         android:layout_height="match_parent"
         android:listSelector="@android:color/transparent" />
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_gravity="center"/>
 
-</LinearLayout>
+
+</FrameLayout>
