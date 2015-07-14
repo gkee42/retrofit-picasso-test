@@ -21,7 +21,7 @@ apply plugin: 'com.android.application'
 android {
     // Choose your platform.
     compileSdkVersion 22
-    buildToolsVersion '21.1.2'
+    buildToolsVersion "22.0.1"
 
     // These options apply to all builds.
     defaultConfig {
